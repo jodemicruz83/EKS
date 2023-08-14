@@ -1,0 +1,45 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sathd-web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  namespace: sathd-web
+  name: deployment-sathd-web
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: app-sathd-web
+  replicas: 2
+  template:
+    creationTimestamp: null
+    metadata:
+      labels:
+        app.kubernetes.io/name: app-sathd-web
+    spec:
+      containers:
+      - image: 379445081719.dkr.ecr.us-east-1.amazonaws.com/prd-globo-api:latest
+        imagePullPolicy: Always
+        name: app-sathd-web
+        resources: {}
+        ports:
+        - containerPort: 80
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sathd-web
+  name: service-sathd-web
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: app-sathd-web
